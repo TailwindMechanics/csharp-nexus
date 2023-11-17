@@ -5,13 +5,24 @@ using Serilog;
 
 using Neurocache.Csharp.Nexus.NodeRouter;
 
-var envVars = DotEnv.Fluent()
-    .WithExceptions()
-    .WithEnvFiles()
-    .WithTrimValues()
-    .WithOverwriteExistingVars()
-    .WithProbeForEnv(probeLevelsToSearch: 6)
-    .Read();
+IDictionary<string, string>? envVars = null;
+if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+{
+    envVars = DotEnv.Fluent()
+        .WithExceptions()
+        .WithEnvFiles()
+        .WithTrimValues()
+        .WithOverwriteExistingVars()
+        .WithProbeForEnv(probeLevelsToSearch: 6)
+        .Read();
+}
+else
+{
+    envVars = new Dictionary<string, string>
+    {
+        { "BETTERSTACK_LOGS_SOURCE_TOKEN", Environment.GetEnvironmentVariable("BETTERSTACK_LOGS_SOURCE_TOKEN")! }
+    };
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
