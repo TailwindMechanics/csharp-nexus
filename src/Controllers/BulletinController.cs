@@ -14,12 +14,12 @@ using Neurocache.Csharp.Nexus.Schema;
 namespace Neurocache.Csharp.Nexus.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class BulletinController : ControllerBase
+    public class RunController : ControllerBase
     {
         [HttpPost("kill")]
         public IActionResult Kill()
         {
+            Log.Information("Killing all sessions");
             BulletinRouter.KillSubject.OnNext(Unit.Default);
             return Ok($"Killed");
         }
@@ -28,12 +28,13 @@ namespace Neurocache.Csharp.Nexus.Controllers
         public IActionResult StopAgent([FromBody] StopSessionRequest body)
         {
             body.Deconstruct(out var sessionToken);
+            Log.Information($"Stopping session: {sessionToken}");
             BulletinRouter.StopSubject.OnNext(sessionToken);
             return Ok($"Stopped session: {sessionToken}");
         }
 
-        [HttpPost]
-        public async Task Bulletin()
+        [HttpPost("run")]
+        public async Task Run()
         {
             using var reader = new StreamReader(Request.Body);
             var body = await reader.ReadToEndAsync();

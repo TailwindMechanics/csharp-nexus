@@ -31,5 +31,5 @@ neurocache-csharp-nexus
    │  ├─ NodeRunArgs.cs
    │  └─ StopSessionRequest.cs
    └─ Utilities
-      ├─ NodeUtils.cs
+      ├─ Node.cs
       └─ ObservableExtensions.cs
