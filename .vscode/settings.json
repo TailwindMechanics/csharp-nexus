@@ -27,7 +27,8 @@
     "Agent": "Robot",
     "Dev": "Tools",
     "Root": "Base",
-    "NodeRouter": "Routes"
+    "NodeRouter": "Routes",
+    "Bulletin": "Messages"
   },
   "material-icon-theme.files.associations": {
     "root": "Tree"
