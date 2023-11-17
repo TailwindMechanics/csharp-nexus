@@ -1,0 +1,31 @@
+neurocache-csharp-nexus
+├─ .env
+├─ .gitignore
+├─ appsettings.json
+├─ autoCommentPath.js
+├─ neurocache-csharp-nexus.csproj
+├─ neurocache-csharp-nexus.sln
+├─ Program.cs
+├─ project-hierarchy.txt
+├─ Properties
+│  └─ launchSettings.json
+├─ README.md
+├─ root
+├─ rootGrouper.js
+└─ src
+   ├─ Controllers
+   │  └─ BulletinController.cs
+   ├─ Nodes
+   │  ├─ AvatarGen
+   │  │  └─ AvatarGen.cs
+   │  ├─ GptChat
+   │  │  └─ GptChat.cs
+   │  ├─ NodeRouter
+   │  │  ├─ Bulletin.cs
+   │  │  ├─ INode.cs
+   │  │  ├─ NodeRecord.cs
+   │  │  └─ NodeRouter.cs
+   │  └─ Persona
+   │     └─ Persona.cs
+   └─ Utilities
+      └─ ObservableExtensions.cs
