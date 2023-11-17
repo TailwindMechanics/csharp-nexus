@@ -14,10 +14,10 @@ namespace Neurocache.Csharp.Nexus.Nodes.OpenAi
             await Task.Delay(TimeSpan.FromSeconds(10));
             callback.OnNext(new NodeRecord(sessionToken, payload, NodeId));
 
-            await Task.Delay(TimeSpan.FromSeconds(15));
+            await Task.Delay(TimeSpan.FromSeconds(5));
             callback.OnNext(new NodeRecord(sessionToken, payload, NodeId));
 
-            await Task.Delay(TimeSpan.FromSeconds(20));
+            await Task.Delay(TimeSpan.FromSeconds(5));
             callback.OnNext(new NodeRecord(sessionToken, payload, NodeId, true));
         }
     }
