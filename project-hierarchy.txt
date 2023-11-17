@@ -15,16 +15,16 @@ neurocache-csharp-nexus
 └─ src
    ├─ Controllers
    │  └─ BulletinController.cs
+   ├─ NodeRouter
+   │  ├─ Bulletin.cs
+   │  ├─ BulletinRouter.cs
+   │  ├─ INode.cs
+   │  └─ NodeRecord.cs
    ├─ Nodes
    │  ├─ AvatarGen
    │  │  └─ AvatarGen.cs
    │  ├─ GptChat
    │  │  └─ GptChat.cs
-   │  ├─ NodeRouter
-   │  │  ├─ Bulletin.cs
-   │  │  ├─ INode.cs
-   │  │  ├─ NodeRecord.cs
-   │  │  └─ NodeRouter.cs
    │  └─ Persona
    │     └─ Persona.cs
    └─ Utilities

@@ -1,6 +1,6 @@
-//path: src\Nodes\NodeRouter\INode.cs
+//path: src\NodeRouter\INode.cs
 
-namespace Neurocache.Csharp.Nexus.Nodes.NodeRouter
+namespace Neurocache.Csharp.Nexus.NodeRouter
 {
     public interface INode
     {

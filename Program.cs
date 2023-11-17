@@ -3,6 +3,8 @@
 using dotenv.net;
 using Serilog;
 
+using Neurocache.Csharp.Nexus.NodeRouter;
+
 var envVars = DotEnv.Fluent()
     .WithExceptions()
     .WithEnvFiles()
@@ -28,6 +30,7 @@ var app = builder.Build();
     var lifetime = app.Services.GetRequiredService<IHostApplicationLifetime>();
     lifetime.ApplicationStarted.Register(() =>
     {
+        BulletinRouter.Init();
         Log.Information("<--- Csharp Nexus Started --->");
     });
     lifetime.ApplicationStopping.Register(() =>
