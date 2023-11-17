@@ -17,13 +17,15 @@ namespace Neurocache.Csharp.Nexus.Nodes.OpenAi
                 args.Callback.OnNext(new NodeRecord(
                     args.Bulletin.SessionToken,
                     "demo: async fetch memories from pinecone",
-                    NodeId
+                    NodeId,
+                    false
                 ));
                 await Task.Delay(TimeSpan.FromSeconds(5));
                 args.Callback.OnNext(new NodeRecord(
                     args.Bulletin.SessionToken,
                     "demo: async stream all message replies from gpt-4",
-                    NodeId
+                    NodeId,
+                    false
                 ));
                 await Task.Delay(TimeSpan.FromSeconds(5));
                 args.Callback.OnNext(new NodeRecord(
