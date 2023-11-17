@@ -4,6 +4,7 @@ using System.Reactive.Subjects;
 using System.Reactive.Linq;
 
 using Neurocache.Csharp.Nexus.Nodes.OpenAi;
+using Neurocache.Csharp.Nexus.Schema;
 
 namespace Neurocache.Csharp.Nexus.NodeRouter
 {
@@ -25,13 +26,13 @@ namespace Neurocache.Csharp.Nexus.NodeRouter
         private static void OnBulletin(Bulletin bulletin)
         {
             if (bulletin.NodeIds.Contains(AvatarGen.NodeId))
-                AvatarGen.RunAsync(bulletin.SessionToken, bulletin.Payload, recordSubject);
+                AvatarGen.Run(bulletin.SessionToken, bulletin.Payload, recordSubject);
 
             if (bulletin.NodeIds.Contains(GptChat.NodeId))
-                GptChat.RunAsync(bulletin.SessionToken, bulletin.Payload, recordSubject);
+                GptChat.Run(bulletin.SessionToken, bulletin.Payload, recordSubject);
 
             if (bulletin.NodeIds.Contains(Persona.NodeId))
-                Persona.RunAsync(bulletin.SessionToken, bulletin.Payload, recordSubject);
+                Persona.Run(bulletin.SessionToken, bulletin.Payload, recordSubject);
         }
     }
 }

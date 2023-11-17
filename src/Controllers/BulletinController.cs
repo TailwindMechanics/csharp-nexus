@@ -8,6 +8,7 @@ using System.Text;
 using Serilog;
 
 using Neurocache.Csharp.Nexus.NodeRouter;
+using Neurocache.Csharp.Nexus.Schema;
 
 namespace Neurocache.Csharp.Nexus.Controllers
 {
@@ -15,6 +16,19 @@ namespace Neurocache.Csharp.Nexus.Controllers
     [Route("[controller]")]
     public class BulletinController : ControllerBase
     {
+        [HttpPost("kill")]
+        public IActionResult Kill()
+        {
+            return Ok($"Killed");
+        }
+
+        [HttpPost("stop")]
+        public IActionResult StopAgent([FromBody] StopSessionRequest body)
+        {
+            body.Deconstruct(out var sessionToken);
+            return Ok($"Stopped session: {sessionToken}");
+        }
+
         [HttpPost]
         public async Task Bulletin()
         {

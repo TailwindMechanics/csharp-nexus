@@ -1,4 +1,5 @@
 {
+    "omnisharp.sdkVersion": "latest",
     "workbench.colorTheme": "Monokai Night",
     "editor.codeLens": false,
     "editor.formatOnSave": true,
