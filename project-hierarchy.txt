@@ -28,6 +28,8 @@ neurocache-csharp-nexus
    │  ├─ Bulletin.cs
    │  ├─ INode.cs
    │  ├─ NodeRecord.cs
+   │  ├─ NodeRunArgs.cs
    │  └─ StopSessionRequest.cs
    └─ Utilities
+      ├─ NodeUtils.cs
       └─ ObservableExtensions.cs

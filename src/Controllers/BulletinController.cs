@@ -3,6 +3,7 @@
 using System.Threading.Channels;
 using Microsoft.AspNetCore.Mvc;
 using System.Reactive.Linq;
+using System.Reactive;
 using Newtonsoft.Json;
 using System.Text;
 using Serilog;
@@ -19,6 +20,7 @@ namespace Neurocache.Csharp.Nexus.Controllers
         [HttpPost("kill")]
         public IActionResult Kill()
         {
+            BulletinRouter.KillSubject.OnNext(Unit.Default);
             return Ok($"Killed");
         }
 
@@ -26,6 +28,7 @@ namespace Neurocache.Csharp.Nexus.Controllers
         public IActionResult StopAgent([FromBody] StopSessionRequest body)
         {
             body.Deconstruct(out var sessionToken);
+            BulletinRouter.StopSubject.OnNext(sessionToken);
             return Ok($"Stopped session: {sessionToken}");
         }
 
@@ -49,7 +52,7 @@ namespace Neurocache.Csharp.Nexus.Controllers
                     var serialized = JsonConvert.SerializeObject(rec);
                     channel.Writer.TryWrite(serialized);
 
-                    Log.Information($"Emitting record from: {rec.NodeId}, is final: {rec.IsFinal}");
+                    Log.Information($"Emitting record:{rec.Payload}, from:{rec.NodeId}, is final:{rec.IsFinal}");
                     if (completedNodeCount >= bulletin.NodeIds.Count)
                     {
                         Log.Information("All nodes completed, closing channel");
