@@ -13,7 +13,6 @@ var envVars = DotEnv.Fluent()
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IRouter>();
 builder.Services.AddControllers();
 
 Log.Logger = new LoggerConfiguration()
