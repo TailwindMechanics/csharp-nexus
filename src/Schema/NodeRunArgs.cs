@@ -3,7 +3,7 @@
 using System.Reactive.Subjects;
 using System.Reactive;
 
-namespace Neurocache.Csharp.Nexus.Schema
+namespace Neurocache.Schema
 {
     public record NodeRunArgs(
         Bulletin Bulletin,

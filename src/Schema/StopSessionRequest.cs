@@ -1,6 +1,6 @@
 //path: src\Schema\StopSessionRequest.cs
 
-namespace Neurocache.Csharp.Nexus.Schema
+namespace Neurocache.Schema
 {
     public record StopSessionRequest(string SessionToken);
 }

@@ -11,7 +11,7 @@
   "explorer.fileNesting.expand": false,
   "editor.detectIndentation": false,
   "explorer.fileNesting.patterns": {
-    "root": ".env, .gitignore, appsettings.json, autoCommentPath.js, csharp-nexus.csproj, csharp-nexus.sln, Dockerfile, Program.cs, project-hierarchy.txt, README.md, rootGrouper.js"
+    "root": ".env, .gitignore, appsettings.json, autoCommentPath.js, Dockerfile, dotnet_cruiser.csproj, dotnet_cruiser.sln, Program.cs, project-hierarchy.txt, README.md, rootGrouper.js"
   },
   "material-icon-theme.folders.associations": {
     "Properties": "Utils",

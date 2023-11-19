@@ -8,10 +8,10 @@ using Newtonsoft.Json;
 using System.Text;
 using Serilog;
 
-using Neurocache.Csharp.Nexus.NodeRouter;
-using Neurocache.Csharp.Nexus.Schema;
+using Neurocache.NodeRouter;
+using Neurocache.Schema;
 
-namespace Neurocache.Csharp.Nexus.Controllers
+namespace Neurocache.Controllers
 {
     [ApiController]
     public class RunController : ControllerBase

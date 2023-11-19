@@ -2,10 +2,10 @@
 
 using System.Reactive.Linq;
 
-using Neurocache.Csharp.Nexus.Utilities;
-using Neurocache.Csharp.Nexus.Schema;
+using Neurocache.Utilities;
+using Neurocache.Schema;
 
-namespace Neurocache.Csharp.Nexus.Nodes.OpenAi
+namespace Neurocache.Nodes.OpenAi
 {
     public class AvatarGen : INode
     {

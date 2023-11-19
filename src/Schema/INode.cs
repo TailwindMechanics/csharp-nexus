@@ -1,6 +1,6 @@
 //path: src\Schema\INode.cs
 
-namespace Neurocache.Csharp.Nexus.Schema
+namespace Neurocache.Schema
 {
     public interface INode
     {

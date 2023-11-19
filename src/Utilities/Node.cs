@@ -3,9 +3,9 @@
 using System.Reactive.Linq;
 using System.Reactive;
 
-using Neurocache.Csharp.Nexus.Schema;
+using Neurocache.Schema;
 
-namespace Neurocache.Csharp.Nexus.Utilities
+namespace Neurocache.Utilities
 {
     public static class Node
     {

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "csharp-nexus", "csharp-nexus.csproj", "{DBAA8F36-9979-45A4-9E76-22EEDA51C18B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet_cruiser", "dotnet_cruiser.csproj", "{DBAA8F36-9979-45A4-9E76-22EEDA51C18B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

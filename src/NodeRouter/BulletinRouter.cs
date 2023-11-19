@@ -4,10 +4,10 @@ using System.Reactive.Subjects;
 using System.Reactive.Linq;
 using System.Reactive;
 
-using Neurocache.Csharp.Nexus.Nodes.OpenAi;
-using Neurocache.Csharp.Nexus.Schema;
+using Neurocache.Nodes.OpenAi;
+using Neurocache.Schema;
 
-namespace Neurocache.Csharp.Nexus.NodeRouter
+namespace Neurocache.NodeRouter
 {
     public class BulletinRouter
     {
