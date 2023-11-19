@@ -14,23 +14,8 @@ using Neurocache.Schema;
 namespace Neurocache.Controllers
 {
     [ApiController]
-    public class RunController : ControllerBase
+    public class Controller : ControllerBase
     {
-        [HttpGet("ping")]
-        public IActionResult Ping()
-        {
-            Log.Information($"Received Ping");
-            return Ok($"Pong");
-        }
-
-        [HttpGet("health")]
-        public IActionResult Get()
-        {
-            var message = "Csharp Nexus is healthy!";
-            Log.Information(message);
-            return Ok(message);
-        }
-
         [HttpPost("kill")]
         public IActionResult Kill()
         {
