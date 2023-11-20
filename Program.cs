@@ -3,7 +3,8 @@
 using dotenv.net;
 using Serilog;
 
-using Neurocache.Csharp.Nexus.NodeRouter;
+using Neurocache.NodeRouter;
+using Neurocache.Utilities;
 
 IDictionary<string, string>? envVars = null;
 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
@@ -44,11 +45,11 @@ var app = builder.Build();
     lifetime.ApplicationStarted.Register(() =>
     {
         BulletinRouter.Init();
-        Log.Information("<--- Csharp Nexus Started --->");
+        Log.Information($"<--- {VesselInfo.ThisVessel}: Online --->");
     });
     lifetime.ApplicationStopping.Register(() =>
     {
-        Log.Information("<--- Csharp Nexus Stopped --->");
+        Log.Information($"<--- {VesselInfo.ThisVessel}: Offline --->");
         Log.CloseAndFlush();
     });
 
