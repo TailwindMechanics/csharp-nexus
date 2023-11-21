@@ -28,7 +28,10 @@
         "Dev": "Tools",
         "Root": "Base",
         "NodeRouter": "Routes",
-        "Bulletin": "Messages"
+        "Bulletin": "Messages",
+        "Envars": "Secure",
+        "LogbookFrigate": "Log",
+        "Lifetime": "Generator"
     },
     "material-icon-theme.files.associations": {
         "root": "Tree"
