@@ -19,7 +19,7 @@ dotnet_cruiser
    │  └─ HealthController.cs
    ├─ Lifetime
    │  └─ Lifetime.cs
-   ├─ LogbookFrigate
+   ├─ LogkeepFrigate
    │  └─ Logbook.cs
    ├─ NodeRouter
    │  └─ BulletinRouter.cs
