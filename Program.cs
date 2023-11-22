@@ -24,6 +24,6 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.MapControllers();
-    new Lifetime().Subscribe(app.Services, BulletinRouter.Init);
+    new Lifetime().Subscribe(app.Services, DispatchForwarder.Init);
     app.Run();
 }

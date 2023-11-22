@@ -6,7 +6,6 @@ using System.Reactive.Linq;
 using System.Reactive;
 using Newtonsoft.Json;
 using System.Text;
-using Serilog;
 
 using Neurocache.NodeRouter;
 using Neurocache.ShipsInfo;
@@ -21,49 +20,49 @@ namespace Neurocache.Controllers
         public IActionResult Kill()
         {
             Ships.Log("Killing all sessions");
-            BulletinRouter.KillSubject.OnNext(Unit.Default);
+            DispatchForwarder.KillSubject.OnNext(Unit.Default);
             return Ok();
         }
 
-        [HttpPost("stop")]
-        public IActionResult Stop([FromBody] StopSessionRequest body)
+        [HttpPost("operation/stop")]
+        public IActionResult Stop([FromBody] StopOperationRequest body)
         {
             Ships.Log("Stopping session");
             body.Deconstruct(out var sessionToken);
-            BulletinRouter.StopSubject.OnNext(sessionToken);
+            DispatchForwarder.StopSubject.OnNext(sessionToken);
             return Ok();
         }
 
-        [HttpPost("run")]
+        [HttpPost("operation/dispatch")]
         public async Task Run()
         {
-            Ships.Log($"Received operation request");
+            Ships.Log($"Received dispatch");
 
             using var reader = new StreamReader(Request.Body);
             var body = await reader.ReadToEndAsync();
-            var bulletin = JsonConvert.DeserializeObject<Bulletin>(body)!;
+            var dispatchReport = JsonConvert.DeserializeObject<OperationReport>(body)!;
 
             int completedNodeCount = 0;
             var channel = Channel.CreateUnbounded<string>();
 
-            BulletinRouter.RecordStream
-                .Where(rec => rec.SessionToken == bulletin.SessionToken)
-                .Subscribe(rec =>
+            DispatchForwarder.ReportStream
+                .Where(report => report.Token == dispatchReport.Token)
+                .Subscribe(report =>
                 {
-                    if (rec.IsFinal) completedNodeCount++;
+                    if (report.Final) completedNodeCount++;
 
-                    var serialized = JsonConvert.SerializeObject(rec);
+                    var serialized = JsonConvert.SerializeObject(report);
                     channel.Writer.TryWrite(serialized);
 
-                    Ships.Log($"Emitting report:{rec.Payload}, from:{rec.NodeId}, is final:{rec.IsFinal}");
-                    if (completedNodeCount >= bulletin.NodeIds.Count)
+                    Ships.Log($"Emitting report:{report.Payload}, from:{report.Author}, is final:{report.Final}");
+                    if (completedNodeCount >= dispatchReport.Dependents.Count)
                     {
                         Ships.Log("All nodes completed, closing channel");
                         channel.Writer.TryComplete();
                     }
                 });
 
-            BulletinRouter.BulletinSubject.OnNext(bulletin);
+            DispatchForwarder.DispatchSubject.OnNext(dispatchReport);
 
             var stream = Response.Body;
             Response.StatusCode = 200;

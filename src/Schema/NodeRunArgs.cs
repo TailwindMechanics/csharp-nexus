@@ -5,9 +5,9 @@ using System.Reactive;
 
 namespace Neurocache.Schema
 {
-    public record NodeRunArgs(
-        Bulletin Bulletin,
-        ISubject<NodeRecord> Callback,
+    public record HubOperation(
+        OperationReport OperationReport,
+        ISubject<OperationReport> Callback,
         IObservable<string> StopStream,
         IObservable<Unit> KillStream
     );

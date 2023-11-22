@@ -5,6 +5,6 @@ namespace Neurocache.Schema
     public interface INode
     {
         static abstract string NodeId { get; }
-        static abstract void Run(NodeRunArgs args);
+        static abstract void Run(HubOperation hubOperation);
     }
 }

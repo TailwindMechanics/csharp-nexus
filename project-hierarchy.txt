@@ -17,27 +17,23 @@ dotnet_cruiser
    ├─ Controllers
    │  ├─ Controller.cs
    │  └─ HealthController.cs
-   ├─ Lifetime
-   │  └─ Lifetime.cs
-   ├─ LogkeepFrigate
-   │  └─ Logbook.cs
-   ├─ NodeRouter
-   │  └─ BulletinRouter.cs
-   ├─ Nodes
+   ├─ DispatchRouter
+   │  └─ DispatchForwarder.cs
+   ├─ Hubs
    │  ├─ AvatarGen
    │  │  └─ AvatarGen.cs
    │  ├─ GptChat
    │  │  └─ GptChat.cs
+   │  ├─ Hub.cs
    │  └─ Persona
    │     └─ Persona.cs
+   ├─ Lifetime
+   │  └─ Lifetime.cs
+   ├─ LogkeepFrigate
+   │  └─ Logbook.cs
    ├─ Schema
-   │  ├─ Bulletin.cs
+   │  ├─ HubOperation.cs
    │  ├─ INode.cs
-   │  ├─ NodeRecord.cs
-   │  ├─ NodeRunArgs.cs
-   │  └─ StopSessionRequest.cs
-   ├─ ShipsInfo
-   │  └─ Ships.cs
-   └─ Utilities
-      ├─ Node.cs
-      └─ ObservableExtensions.cs
+   │  └─ NodeRunArgs.cs
+   └─ ShipsInfo
+      └─ Ships.cs
