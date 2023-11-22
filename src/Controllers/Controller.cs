@@ -1,4 +1,4 @@
-//path: src\Controllers\BulletinController.cs
+//path: src\Controllers\Controller.cs
 
 using System.Threading.Channels;
 using Microsoft.AspNetCore.Mvc;

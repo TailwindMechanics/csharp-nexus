@@ -1,10 +1,11 @@
-neurocache-csharp-nexus
+dotnet_cruiser
 ├─ .env
 ├─ .gitignore
 ├─ appsettings.json
 ├─ autoCommentPath.js
-├─ neurocache-csharp-nexus.csproj
-├─ neurocache-csharp-nexus.sln
+├─ Dockerfile
+├─ dotnet_cruiser.csproj
+├─ dotnet_cruiser.sln
 ├─ Program.cs
 ├─ project-hierarchy.txt
 ├─ Properties
@@ -14,7 +15,14 @@ neurocache-csharp-nexus
 ├─ rootGrouper.js
 └─ src
    ├─ Controllers
-   │  └─ BulletinController.cs
+   │  ├─ Controller.cs
+   │  └─ HealthController.cs
+   ├─ Envars
+   │  └─ EnvironmentVariables.cs
+   ├─ Lifetime
+   │  └─ Lifetime.cs
+   ├─ LogbookFrigate
+   │  └─ Logbook.cs
    ├─ NodeRouter
    │  └─ BulletinRouter.cs
    ├─ Nodes
@@ -32,4 +40,5 @@ neurocache-csharp-nexus
    │  └─ StopSessionRequest.cs
    └─ Utilities
       ├─ Node.cs
-      └─ ObservableExtensions.cs
+      ├─ ObservableExtensions.cs
+      └─ VesselInfo.cs
