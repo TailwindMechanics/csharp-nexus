@@ -25,7 +25,7 @@ namespace Neurocache.Controllers
         }
 
         [HttpPost("stop")]
-        public IActionResult StopAgent([FromBody] StopSessionRequest body)
+        public IActionResult Stop([FromBody] StopSessionRequest body)
         {
             body.Deconstruct(out var sessionToken);
             Log.Information($"Stopping session: {sessionToken}");
