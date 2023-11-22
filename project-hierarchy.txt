@@ -17,8 +17,6 @@ dotnet_cruiser
    ├─ Controllers
    │  ├─ Controller.cs
    │  └─ HealthController.cs
-   ├─ Envars
-   │  └─ EnvironmentVariables.cs
    ├─ Lifetime
    │  └─ Lifetime.cs
    ├─ LogbookFrigate
@@ -38,7 +36,8 @@ dotnet_cruiser
    │  ├─ NodeRecord.cs
    │  ├─ NodeRunArgs.cs
    │  └─ StopSessionRequest.cs
+   ├─ ShipsInfo
+   │  └─ Ships.cs
    └─ Utilities
       ├─ Node.cs
-      ├─ ObservableExtensions.cs
-      └─ VesselInfo.cs
+      └─ ObservableExtensions.cs
