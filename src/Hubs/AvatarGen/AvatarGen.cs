@@ -1,30 +1,31 @@
 //path: src\Hubs\AvatarGen\AvatarGen.cs
 
+using Neurocache.Broadcasts;
 using Neurocache.ShipsInfo;
+using Neurocache.Utilities;
 using Neurocache.Schema;
 
 namespace Neurocache.Hubs
 {
-    public class AvatarGen : IHub
+    public class AvatarGen
     {
         public static string HubId => nameof(AvatarGen).ToLower();
         public static async void Run(HubOperation hubOperation)
         {
-            await Wait(1, hubOperation);
+            Ships.Log("Generating avatar...");
 
-            Ships.Log("Generating avatar");
+            await Utils.Wait(1, hubOperation);
 
-            hubOperation.Callback.OnNext(new OperationReport(
+            Ships.Log("Finished generating avatar");
+            var hubReport = new OperationReport(
                 hubOperation.OperationReport.Token,
                 HubId,
                 "Generating avatar",
-                true,
+                false,
                 []
-            ));
-        }
+            );
 
-        static Task Wait(float time, HubOperation hubOperation)
-            => Task.Delay(TimeSpan.FromSeconds(time),
-                hubOperation.CancelToken.Token);
+            BroadcastChannelService.SendHubReportToVanguardStream.OnNext(hubReport);
+        }
     }
 }

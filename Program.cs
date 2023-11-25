@@ -5,6 +5,7 @@ using Serilog;
 
 using Neurocache.LogkeepFrigate;
 using Neurocache.Lifetime;
+using Neurocache.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -23,6 +24,9 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.MapControllers();
-    new Lifetime().Subscribe(app.Services);
+    new Lifetime().Subscribe(app.Services, () =>
+    {
+        HubOperationService.Init();
+    });
     app.Run();
 }

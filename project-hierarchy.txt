@@ -14,16 +14,18 @@ dotnet_cruiser
 ├─ root
 ├─ rootGrouper.js
 └─ src
+   ├─ Broadcasts
+   │  ├─ BroadcastChannel.cs
+   │  └─ BroadcastChannelService.cs
    ├─ Controllers
    │  ├─ Controller.cs
    │  └─ HealthController.cs
-   ├─ DispatchRouter
-   │  └─ DispatchForwarder.cs
    ├─ Hubs
    │  ├─ AvatarGen
    │  │  └─ AvatarGen.cs
    │  ├─ GptChat
    │  │  └─ GptChat.cs
+   │  ├─ HubRouter.cs
    │  └─ Persona
    │     └─ Persona.cs
    ├─ Lifetime
@@ -31,7 +33,8 @@ dotnet_cruiser
    ├─ LogkeepFrigate
    │  └─ Logkeep.cs
    ├─ Schema
-   │  ├─ IHub.cs
    │  └─ Schema.cs
-   └─ ShipsInfo
-      └─ Ships.cs
+   ├─ ShipsInfo
+   │  └─ Ships.cs
+   └─ Utilities
+      └─ HubUtils.cs

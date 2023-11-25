@@ -27,7 +27,7 @@
         "Agent": "Robot",
         "Dev": "Tools",
         "Root": "Base",
-        "DispatchRouter": "Routes",
+        "Broadcasts": "Routes",
         "Bulletin": "Messages",
         "Envars": "Secure",
         "LogkeepFrigate": "Log",
