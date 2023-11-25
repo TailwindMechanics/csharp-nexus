@@ -33,7 +33,7 @@ namespace Neurocache.Controllers
             return Ok();
         }
 
-        [HttpPost("operation/dispatch")]
+        [HttpGet("operation/dispatch")]
         public async Task Run()
         {
             Ships.Log($"Received dispatch");
