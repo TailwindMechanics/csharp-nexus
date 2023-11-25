@@ -48,6 +48,8 @@ namespace Neurocache.Controllers
             var body = await reader.ReadToEndAsync();
             var dispatchReport = JsonConvert.DeserializeObject<OperationReport>(body)!;
 
+            Ships.Log($"Received report: {dispatchReport}");
+
             int completedNodeCount = 0;
             var channel = Channel.CreateUnbounded<string>();
 
@@ -69,6 +71,7 @@ namespace Neurocache.Controllers
                 });
 
             var cancelToken = HttpContext.RequestAborted;
+            Ships.Log($"cancelToken: {cancelToken}");
             DispatchForwarder.Dispatch(dispatchReport, cancelToken);
 
             var stream = Response.Body;
