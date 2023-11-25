@@ -4,7 +4,6 @@ using dotenv.net;
 using Serilog;
 
 using Neurocache.LogkeepFrigate;
-using Neurocache.NodeRouter;
 using Neurocache.Lifetime;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +23,6 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.MapControllers();
-    new Lifetime().Subscribe(app.Services, DispatchForwarder.Init);
+    new Lifetime().Subscribe(app.Services);
     app.Run();
 }

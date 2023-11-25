@@ -19,9 +19,7 @@ namespace Neurocache.NodeRouter
 
 
         public static void Stop(string operationToken)
-        {
-            operations[operationToken].Cancel();
-        }
+            => operations[operationToken].Cancel();
 
         public static void Kill()
         {
