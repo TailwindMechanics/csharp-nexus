@@ -1,7 +1,5 @@
 //path: src\Hubs\GptChat\GptChat.cs
 
-using System.Reactive.Linq;
-
 using Neurocache.ShipsInfo;
 using Neurocache.Schema;
 
@@ -11,14 +9,10 @@ namespace Neurocache.Hubs
     {
         public static string HubId => nameof(GptChat).ToLower();
         public static async void Run(HubOperation hubOperation)
-            => await Hub.Run(HubId, hubOperation, ()
-                => HubOperation(hubOperation));
-
-        static async Task HubOperation(HubOperation hubOperation)
         {
             Ships.Log("demo: async fetch memories from pinecone");
 
-            await Task.Delay(TimeSpan.FromSeconds(10));
+            await Wait(10, hubOperation);
 
             hubOperation.Callback.OnNext(new OperationReport(
                 hubOperation.OperationReport.Token,
@@ -28,7 +22,7 @@ namespace Neurocache.Hubs
                 []
             ));
 
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            await Wait(5, hubOperation);
 
             Ships.Log("demo: async stream all message replies from gpt-4");
 
@@ -40,7 +34,7 @@ namespace Neurocache.Hubs
                 []
             ));
 
-            await Task.Delay(TimeSpan.FromSeconds(5));
+            await Wait(5, hubOperation);
 
             Ships.Log("demo: async update pinecone with new memories");
 
@@ -52,5 +46,9 @@ namespace Neurocache.Hubs
                 []
             ));
         }
+
+        static Task Wait(float time, HubOperation hubOperation)
+            => Task.Delay(TimeSpan.FromSeconds(time),
+                hubOperation.CancelToken.Token);
     }
 }

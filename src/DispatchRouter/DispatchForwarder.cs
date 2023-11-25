@@ -1,8 +1,6 @@
 //path: src\DispatchRouter\DispatchForwarder.cs
 
 using System.Reactive.Subjects;
-using System.Reactive.Linq;
-using System.Reactive;
 
 using Neurocache.Schema;
 using Neurocache.Hubs;
@@ -15,30 +13,35 @@ namespace Neurocache.NodeRouter
         public static DispatchForwarder Instance => instance;
         private DispatchForwarder() { }
 
-        public static readonly ISubject<Unit> KillSubject
-            = new Subject<Unit>();
-        public static readonly ISubject<string> StopSubject
-            = new Subject<string>();
-        public static readonly ISubject<OperationReport> DispatchSubject
-            = new Subject<OperationReport>();
-
         public static IObservable<OperationReport> ReportStream => reportSubject;
         static readonly ISubject<OperationReport> reportSubject = new Subject<OperationReport>();
 
-        public static void Init()
+        static readonly Dictionary<string, CancellationTokenSource> operations = [];
+
+        public static void Stop(string operationToken)
         {
-            DispatchSubject.Subscribe(OnDispatchReceived);
-            StopSubject.Subscribe();
+            operations[operationToken].Cancel();
         }
 
-        private static void OnDispatchReceived(OperationReport dispatch)
+        public static void Kill()
         {
+            foreach (var cancelToken in operations.Values)
+            {
+                cancelToken.Cancel();
+            }
+        }
+
+        public static void Dispatch(OperationReport dispatch, CancellationToken httpCancel)
+        {
+            var cancelToken = CancellationTokenSource.CreateLinkedTokenSource(httpCancel);
+
             var hubOperation = new HubOperation(
                 dispatch,
                 reportSubject,
-                StopSubject,
-                KillSubject
+                cancelToken
             );
+
+            operations[dispatch.Token] = cancelToken;
 
             AvatarGen.Run(hubOperation);
             GptChat.Run(hubOperation);

@@ -1,7 +1,5 @@
 //path: src\Hubs\Persona\Persona.cs
 
-using System.Reactive.Linq;
-
 using Neurocache.ShipsInfo;
 using Neurocache.Schema;
 
@@ -11,14 +9,10 @@ namespace Neurocache.Hubs
     {
         public static string HubId => nameof(Persona).ToLower();
         public static async void Run(HubOperation hubOperation)
-            => await Hub.Run(HubId, hubOperation, ()
-                => HubOperation(hubOperation));
-
-        static async Task HubOperation(HubOperation hubOperation)
         {
             Ships.Log("Generating persona");
 
-            await Task.Delay(TimeSpan.FromSeconds(10));
+            await Wait(10, hubOperation);
 
             hubOperation.Callback.OnNext(new OperationReport(
                 hubOperation.OperationReport.Token,
@@ -28,5 +22,9 @@ namespace Neurocache.Hubs
                 []
             ));
         }
+
+        static Task Wait(float time, HubOperation hubOperation)
+            => Task.Delay(TimeSpan.FromSeconds(time),
+                hubOperation.CancelToken.Token);
     }
 }

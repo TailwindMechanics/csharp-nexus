@@ -16,20 +16,26 @@ namespace Neurocache.Controllers
     [ApiController]
     public class Controller : ControllerBase
     {
+        CancellationTokenSource CancelToken = new();
+
         [HttpPost("kill")]
         public IActionResult Kill()
         {
-            Ships.Log("Killing all sessions");
-            DispatchForwarder.KillSubject.OnNext(Unit.Default);
+            Ships.Log("Killing all operations");
+
+            DispatchForwarder.Kill();
+
             return Ok();
         }
 
         [HttpPost("operation/stop")]
         public IActionResult Stop([FromBody] StopOperationRequest body)
         {
-            Ships.Log("Stopping session");
-            body.Deconstruct(out var sessionToken);
-            DispatchForwarder.StopSubject.OnNext(sessionToken);
+            body.Deconstruct(out var operationToken);
+
+            Ships.Log($"Stopping operation: {operationToken}");
+
+            DispatchForwarder.Stop(operationToken);
             return Ok();
         }
 
@@ -62,15 +68,17 @@ namespace Neurocache.Controllers
                     }
                 });
 
-            DispatchForwarder.DispatchSubject.OnNext(dispatchReport);
+            var cancelToken = HttpContext.RequestAborted;
+            DispatchForwarder.Dispatch(dispatchReport, cancelToken);
 
             var stream = Response.Body;
             Response.StatusCode = 200;
             Response.ContentType = "application/json";
+
             await foreach (var rec in channel.Reader.ReadAllAsync())
             {
-                await stream.WriteAsync(Encoding.UTF8.GetBytes(rec));
-                await stream.FlushAsync();
+                await stream.WriteAsync(Encoding.UTF8.GetBytes(rec), cancelToken);
+                await stream.FlushAsync(cancelToken);
             }
         }
     }
