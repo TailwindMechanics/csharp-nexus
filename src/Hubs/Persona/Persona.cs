@@ -7,17 +7,17 @@ using Neurocache.Schema;
 
 namespace Neurocache.Hubs
 {
-    public class Persona : INode
+    public class Persona : IHub
     {
-        public static string NodeId => nameof(Persona).ToLower();
+        public static string HubId => nameof(Persona).ToLower();
         public static async void Run(HubOperation hubOperation)
-            => await Hub.Run(NodeId, hubOperation, async () =>
+            => await Hub.Run(HubId, hubOperation, async () =>
             {
                 Ships.Log("Generating persona");
                 await Task.Delay(TimeSpan.FromSeconds(10));
                 hubOperation.Callback.OnNext(new OperationReport(
                     hubOperation.OperationReport.Token,
-                    NodeId,
+                    HubId,
                     "Something happened!",
                     true,
                     []

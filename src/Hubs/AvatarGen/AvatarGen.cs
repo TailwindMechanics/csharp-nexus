@@ -7,17 +7,17 @@ using Neurocache.Schema;
 
 namespace Neurocache.Hubs
 {
-    public class AvatarGen : INode
+    public class AvatarGen : IHub
     {
-        public static string NodeId => nameof(AvatarGen).ToLower();
+        public static string HubId => nameof(AvatarGen).ToLower();
         public static async void Run(HubOperation hubOperation)
-            => await Hub.Run(NodeId, hubOperation, async () =>
+            => await Hub.Run(HubId, hubOperation, async () =>
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
                 Ships.Log("Generating avatar");
                 hubOperation.Callback.OnNext(new OperationReport(
                     hubOperation.OperationReport.Token,
-                    NodeId,
+                    HubId,
                     "A thing happened",
                     true,
                     []
