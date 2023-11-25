@@ -9,6 +9,7 @@ namespace Neurocache.NodeRouter
 {
     public class DispatchForwarder
     {
+        static readonly Dictionary<string, CancellationTokenSource> operations = [];
         private static readonly DispatchForwarder instance = new();
         public static DispatchForwarder Instance => instance;
         private DispatchForwarder() { }
@@ -16,7 +17,6 @@ namespace Neurocache.NodeRouter
         public static IObservable<OperationReport> ReportStream => reportSubject;
         static readonly ISubject<OperationReport> reportSubject = new Subject<OperationReport>();
 
-        static readonly Dictionary<string, CancellationTokenSource> operations = [];
 
         public static void Stop(string operationToken)
         {
