@@ -52,15 +52,15 @@ namespace Neurocache.Controllers
                 return BadRequest();
             }
 
+            Response.StatusCode = 200;
+            Response.ContentType = "application/json";
+
             var broadcastChannel = BroadcastChannelService.OpenChannel(
                 Request,
                 Response,
                 HttpContext,
                 operationToken
             );
-
-            Response.StatusCode = 200;
-            Response.ContentType = "application/json";
 
             await Task.WhenAll(broadcastChannel.ReadingTask, broadcastChannel.WritingTask);
             return new EmptyResult();
