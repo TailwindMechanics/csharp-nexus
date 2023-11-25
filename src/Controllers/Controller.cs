@@ -45,19 +45,27 @@ namespace Neurocache.Controllers
             Ships.Log($"Cruiser ready to receive broadcasts for token: {token}");
 
             var channel = Channel.CreateUnbounded<string>();
+
+            var stop = DispatchForwarder.ReportStream
+                .Where(report => report.Token == token)
+                .Where(report => report.Author == Ships.VanguardName)
+                .Where(report => report.Final);
+
             DispatchForwarder.ReportStream
                 .Where(report => report.Token == token)
+                .Where(report => report.Author == Ships.VanguardName)
+                .Finally(() =>
+                {
+                    Ships.Log("Closing broadcast channel");
+                    channel.Writer.TryComplete();
+                })
+                .TakeUntil(stop)
                 .Subscribe(report =>
                 {
+                    Ships.Log($"Cruiser received report: {report.Payload}, from: {report.Author}, is final: {report.Final}");
+
                     var serialized = JsonConvert.SerializeObject(report);
                     channel.Writer.TryWrite(serialized);
-
-                    Ships.Log($"Cruiser emitting report: {report.Payload}, from: {report.Author}, is final: {report.Final}");
-                    if (report.Final)
-                    {
-                        channel.Writer.TryComplete();
-                        Ships.Log("Final report received, closing broadcast channel");
-                    }
                 },
                 onError: error =>
                 {

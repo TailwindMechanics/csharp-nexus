@@ -7,6 +7,7 @@ namespace Neurocache.ShipsInfo
         public static void Log(string message)
             => Serilog.Log.Information($"==> {message}");
 
+        public static readonly string VanguardName = "Vanguard";
         public static readonly string FleetName = "neurocache_fleet";
         public static readonly string ThisVessel = "dotnet_cruiser";
 
