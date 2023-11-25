@@ -24,16 +24,14 @@ dotnet_cruiser
    │  │  └─ AvatarGen.cs
    │  ├─ GptChat
    │  │  └─ GptChat.cs
-   │  ├─ Hub.cs
    │  └─ Persona
    │     └─ Persona.cs
    ├─ Lifetime
    │  └─ Lifetime.cs
    ├─ LogkeepFrigate
-   │  └─ Logbook.cs
+   │  └─ Logkeep.cs
    ├─ Schema
-   │  ├─ HubOperation.cs
-   │  ├─ INode.cs
-   │  └─ NodeRunArgs.cs
+   │  ├─ IHub.cs
+   │  └─ Schema.cs
    └─ ShipsInfo
       └─ Ships.cs

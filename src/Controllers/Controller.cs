@@ -39,52 +39,49 @@ namespace Neurocache.Controllers
             return Ok();
         }
 
-        [HttpPost("operation/dispatch")]
-        public async Task Run()
+        [HttpGet("broadcast/{token}")]
+        public async Task<IActionResult> BroadcastChannel(string token)
         {
-            Ships.Log($"Received dispatch");
+            Ships.Log($"Cruiser ready to receive broadcasts for token: {token}");
 
-            using var reader = new StreamReader(Request.Body);
-            var body = await reader.ReadToEndAsync();
-            Ships.Log($"Received dispatch, body: {body}");
-
-            var dispatchReport = JsonConvert.DeserializeObject<OperationReport>(body)!;
-
-            Ships.Log($"Received report, parsed: {dispatchReport}");
-
-            int completedNodeCount = 0;
             var channel = Channel.CreateUnbounded<string>();
-
             DispatchForwarder.ReportStream
-                .Where(report => report.Token == dispatchReport.Token)
+                .Where(report => report.Token == token)
                 .Subscribe(report =>
                 {
-                    if (report.Final) completedNodeCount++;
-
                     var serialized = JsonConvert.SerializeObject(report);
                     channel.Writer.TryWrite(serialized);
 
-                    Ships.Log($"Emitting report:{report.Payload}, from:{report.Author}, is final:{report.Final}");
-                    if (completedNodeCount >= dispatchReport.Dependents.Count)
+                    Ships.Log($"Cruiser emitting report: {report.Payload}, from: {report.Author}, is final: {report.Final}");
+                    if (report.Final)
                     {
-                        Ships.Log("All nodes completed, closing channel");
                         channel.Writer.TryComplete();
+                        Ships.Log("Final report received, closing broadcast channel");
                     }
+                },
+                onError: error =>
+                {
+                    channel.Writer.TryComplete();
+                },
+                onCompleted: () =>
+                {
+                    channel.Writer.TryComplete();
                 });
 
             var cancelToken = HttpContext.RequestAborted;
-            Ships.Log($"cancelToken: {cancelToken}");
-            DispatchForwarder.Dispatch(dispatchReport, cancelToken);
+            DispatchForwarder.InitializeDispatch(token, cancelToken);
 
             var stream = Response.Body;
             Response.StatusCode = 200;
             Response.ContentType = "application/json";
 
-            await foreach (var rec in channel.Reader.ReadAllAsync())
+            await foreach (var rec in channel.Reader.ReadAllAsync(cancelToken))
             {
                 await stream.WriteAsync(Encoding.UTF8.GetBytes(rec), cancelToken);
                 await stream.FlushAsync(cancelToken);
             }
+
+            return new EmptyResult();
         }
     }
 }

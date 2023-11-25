@@ -1,4 +1,4 @@
-//path: src\Schema\INode.cs
+//path: src\Schema\IHub.cs
 
 namespace Neurocache.Schema
 {

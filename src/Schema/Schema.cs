@@ -1,4 +1,4 @@
-//path: src\Schema\HubOperation.cs
+//path: src\Schema\Schema.cs
 
 using System.Reactive.Subjects;
 

@@ -1,7 +1,6 @@
 //path: src\DispatchRouter\DispatchForwarder.cs
 
 using System.Reactive.Subjects;
-
 using Neurocache.ShipsInfo;
 using Neurocache.Schema;
 using Neurocache.Hubs;
@@ -10,7 +9,7 @@ namespace Neurocache.NodeRouter
 {
     public class DispatchForwarder
     {
-        static readonly Dictionary<string, CancellationTokenSource> operations = [];
+        static readonly Dictionary<string, CancellationTokenSource> operations = new Dictionary<string, CancellationTokenSource>();
         private static readonly DispatchForwarder instance = new();
         public static DispatchForwarder Instance => instance;
         private DispatchForwarder() { }
@@ -18,44 +17,48 @@ namespace Neurocache.NodeRouter
         public static IObservable<OperationReport> ReportStream => reportSubject;
         static readonly ISubject<OperationReport> reportSubject = new Subject<OperationReport>();
 
+        public static void InitializeDispatch(string token, CancellationToken httpCancel)
+        {
+            if (!operations.ContainsKey(token))
+            {
+                var cancelToken = CancellationTokenSource.CreateLinkedTokenSource(httpCancel);
+                operations[token] = cancelToken;
+            }
+        }
+
         public static void Stop(string operationToken)
         {
-            Ships.Log($"DispatchForwarder/Stop: operations[operationToken]: {operations[operationToken]}");
-            operations[operationToken].Cancel();
+            if (operations.TryGetValue(operationToken, out var cancelToken))
+            {
+                cancelToken.Cancel();
+                cancelToken.Dispose();
+                operations.Remove(operationToken);
+                Ships.Log($"Stopped operation: {operationToken}");
+            }
         }
 
         public static void Kill()
         {
-            Ships.Log($"DispatchForwarder/Kill: operations: {operations.Count}");
-            foreach (var cancelToken in operations.Values)
+            foreach (var kvp in operations)
             {
-                cancelToken.Cancel();
+                kvp.Value.Cancel();
+                kvp.Value.Dispose();
             }
+            operations.Clear();
+            Ships.Log("Killed all operations");
         }
 
         public static void Dispatch(OperationReport dispatch, CancellationToken httpCancel)
         {
             var cancelToken = CancellationTokenSource.CreateLinkedTokenSource(httpCancel);
-
-            Ships.Log($"DispatchForwarder/Dispatch: cancelToken: {cancelToken}");
-
-            var hubOperation = new HubOperation(
-                dispatch,
-                reportSubject,
-                cancelToken
-            );
-
-            Ships.Log($"DispatchForwarder/Dispatch: hubOperation: {hubOperation}");
-
-            Ships.Log($"DispatchForwarder/Dispatch: operations: {operations}");
-
             operations[dispatch.Token] = cancelToken;
 
-            Ships.Log($"DispatchForwarder/Dispatch: operations[dispatch.Token]: {operations[dispatch.Token]}");
-
+            var hubOperation = new HubOperation(dispatch, reportSubject, cancelToken);
             AvatarGen.Run(hubOperation);
             GptChat.Run(hubOperation);
             Persona.Run(hubOperation);
+
+            Ships.Log($"Dispatched operation: {dispatch.Token}");
         }
     }
 }
