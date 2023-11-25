@@ -35,10 +35,18 @@ namespace Neurocache.Broadcasts
         {
             var taskCompletionSource = new TaskCompletionSource<bool>();
 
+            var readinessReport = new OperationReport(
+                operationToken,
+                Ships.ThisVessel,
+                "Ready",
+                false,
+                []
+            );
+
             BroadcastChannelService
                 .StartHubOperationStream
-                .Subscribe(
-                async report =>
+                .StartWith(new HubOperation(readinessReport, cancelToken))
+                .Subscribe(async report =>
                 {
                     Ships.Log($"Sending report to Vanguard: {report}");
                     var reportJson = JsonConvert.SerializeObject(report);
