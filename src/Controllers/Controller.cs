@@ -46,9 +46,11 @@ namespace Neurocache.Controllers
 
             using var reader = new StreamReader(Request.Body);
             var body = await reader.ReadToEndAsync();
+            Ships.Log($"Received dispatch, body: {body}");
+
             var dispatchReport = JsonConvert.DeserializeObject<OperationReport>(body)!;
 
-            Ships.Log($"Received report: {dispatchReport}");
+            Ships.Log($"Received report, parsed: {dispatchReport}");
 
             int completedNodeCount = 0;
             var channel = Channel.CreateUnbounded<string>();
