@@ -33,6 +33,7 @@
         "LogkeepFrigate": "Log",
         "Lifetime": "Generator",
         "ShipsInfo": "Delta",
+        "WebSocketClient":"Event"
     },
     "material-icon-theme.files.associations": {
         "root": "Tree"

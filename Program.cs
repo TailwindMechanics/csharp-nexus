@@ -3,6 +3,7 @@
 using dotenv.net;
 using Serilog;
 
+using Neurocache.WebSocketClient;
 using Neurocache.LogkeepFrigate;
 using Neurocache.Lifetime;
 using Neurocache.Hubs;
@@ -24,9 +25,15 @@ var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 {
     app.MapControllers();
-    new Lifetime().Subscribe(app.Services, () =>
+    new Lifetime().Subscribe(app.Services,
+    () =>
     {
+        WebSocketClientService.Instance.OnAppStarted();
         HubOperationService.Init();
+    },
+    () =>
+    {
+        WebSocketClientService.Instance.OnAppClosing();
     });
     app.Run();
 }

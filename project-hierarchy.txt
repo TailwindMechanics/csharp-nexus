@@ -33,8 +33,12 @@ dotnet_cruiser
    ├─ LogkeepFrigate
    │  └─ Logkeep.cs
    ├─ Schema
+   │  ├─ OperationReport.cs
    │  └─ Schema.cs
    ├─ ShipsInfo
    │  └─ Ships.cs
-   └─ Utilities
-      └─ HubUtils.cs
+   ├─ Utilities
+   │  └─ HubUtils.cs
+   └─ WebSocketClient
+      ├─ SocketStreams.cs
+      └─ WebSocketClientService.cs
