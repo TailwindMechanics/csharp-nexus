@@ -81,7 +81,10 @@ namespace Neurocache.Broadcasts
             if (incomingData == null) return null;
 
             var report = JsonConvert.DeserializeObject<OperationReport>(incomingData);
-            var irrelevant = report == null || report.Token != operationToken || report.Author != Ships.VanguardName;
+            var irrelevant = report == null
+            || report.Token != operationToken
+            || report.Author != Ships.VanguardStarship.Name;
+
             return irrelevant ? null : report;
         }
     }
