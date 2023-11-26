@@ -21,8 +21,13 @@ namespace Neurocache.WebSocketClient
                 {
                     if (socket.State == WebSocketState.None || socket.State == WebSocketState.Closed || socket.State == WebSocketState.Aborted)
                     {
+                        Ships.Log($"ConnectionStream: Attempting to connect to {address}");
                         await socket.ConnectAsync(new Uri(address), CancellationToken.None);
-                        Ships.Log($"ConnectionStream: successfully connected to {address}");
+                        Ships.Log($"ConnectionStream: Successfully connected to {address}");
+                    }
+                    else
+                    {
+                        Ships.Log($"ConnectionStream: Already connected or in a non-connectable state (State: {socket.State})");
                     }
 
                     return socket.State;
