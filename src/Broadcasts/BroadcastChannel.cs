@@ -37,7 +37,7 @@ namespace Neurocache.Broadcasts
 
             var readinessReport = new OperationReport(
                 operationToken,
-                Ships.ThisVessel,
+                Ships.ThisVessel.Name,
                 "Ready",
                 false,
                 []

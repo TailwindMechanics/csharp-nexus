@@ -10,7 +10,9 @@ namespace Neurocache.ShipsInfo
             => Serilog.Log.Information($"==> {message}");
 
         public static readonly string FleetName = "neurocache_fleet";
-        public static readonly string ThisVessel = "dotnet_cruiser";
+
+        public static Ship ThisVessel
+            => new("dotnet_cruiser", ThisVesselPort()!.Value);
 
         public static string SocketAddress(Ship ship)
             => $"ws://{ship.Name}.neurocache.koyeb:{ship.Port}"
