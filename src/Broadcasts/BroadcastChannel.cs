@@ -37,7 +37,7 @@ namespace Neurocache.Broadcasts
 
             var readinessReport = new OperationReport(
                 operationToken,
-                Ships.ThisVessel.Name,
+                Ships.ThisVesselName,
                 "Ready",
                 false,
                 []
@@ -83,7 +83,7 @@ namespace Neurocache.Broadcasts
             var report = JsonConvert.DeserializeObject<OperationReport>(incomingData);
             var irrelevant = report == null
             || report.Token != operationToken
-            || report.Author != Ships.VanguardStarship.Name;
+            || report.Author != Ships.VanguardName;
 
             return irrelevant ? null : report;
         }

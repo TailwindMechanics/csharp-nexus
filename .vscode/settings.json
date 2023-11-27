@@ -32,8 +32,7 @@
         "Envars": "Secure",
         "LogkeepFrigate": "Log",
         "Lifetime": "Generator",
-        "ShipsInfo": "Delta",
-        "WebSocketClient":"Event"
+        "ShipsInfo": "Delta"
     },
     "material-icon-theme.files.associations": {
         "root": "Tree"
