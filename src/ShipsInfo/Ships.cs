@@ -25,8 +25,8 @@ namespace Neurocache.ShipsInfo
             new Ship("dotnet_cruiser", 5050),
         ];
 
-        public static string VesselAddress(string vessel, int port)
-            => $"http://{vessel}.neurocache.koyeb:{port}"
+        public static string VesselAddress(Ship ship)
+            => $"http://{ship.Name}.neurocache.koyeb:{ship.Port}"
                 .Replace("_", "-");
 
         public static int? ThisVesselPort()
