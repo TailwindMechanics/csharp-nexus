@@ -1,58 +1,53 @@
 //path: src\Hubs\GptChat\GptChat.cs
 
-using Neurocache.Broadcasts;
+using System.Reactive.Subjects;
+
 using Neurocache.ShipsInfo;
-using Neurocache.Utilities;
 using Neurocache.Schema;
 
 namespace Neurocache.Hubs
 {
     public static class GptChat
     {
-        public static string HubId => nameof(GptChat).ToLower();
-        public static async void Run(HubOperation hubOperation)
+        public static string HubTypeId => "gpt_chat";
+        public static async void Run(OperationReport report, ISubject<OperationReport> callback, CancellationToken cancelToken)
         {
+            Ships.Log($"{HubTypeId} received report: {report}");
             Ships.Log("demo: async fetch memories from pinecone");
 
-            await Utils.Wait(10, hubOperation);
+            await Task.Delay(TimeSpan.FromSeconds(10), cancelToken);
 
-            var hubReport = new OperationReport(
-                hubOperation.OperationReport.Token,
-                HubId,
+            callback.OnNext(new OperationReport(
+                report.Token,
+                HubTypeId,
                 "demo: async fetch memories from pinecone",
                 false,
-                []
-            );
+                report.ReportId
+            ));
 
-            BroadcastChannelService.SendHubReportToVanguardStream.OnNext(hubReport);
-
-            await Utils.Wait(5, hubOperation);
+            await Task.Delay(TimeSpan.FromSeconds(5), cancelToken);
 
             Ships.Log("demo: async stream all message replies from gpt-4");
 
-            hubReport = new OperationReport(
-                hubOperation.OperationReport.Token,
-                HubId,
+            callback.OnNext(new OperationReport(
+                report.Token,
+                HubTypeId,
                 "demo: async stream all message replies from gpt-4",
                 false,
-                []
-            );
+                report.ReportId
+            ));
 
-            BroadcastChannelService.SendHubReportToVanguardStream.OnNext(hubReport);
-
-            await Utils.Wait(5, hubOperation);
+            await Task.Delay(TimeSpan.FromSeconds(5), cancelToken);
 
             Ships.Log("demo: async update pinecone with new memories");
 
-            hubReport = new OperationReport(
-                hubOperation.OperationReport.Token,
-                HubId,
+            callback.OnNext(new OperationReport(
+                report.Token,
+                HubTypeId,
                 "demo: async update pinecone with new memories",
                 true,
-                []
-            );
-
-            BroadcastChannelService.SendHubReportToVanguardStream.OnNext(hubReport);
+                report.ReportId
+            ));
         }
     }
 }

@@ -1,32 +1,31 @@
 //path: src\Hubs\Persona\Persona.cs
 
-using Neurocache.Broadcasts;
+using System.Reactive.Subjects;
+
 using Neurocache.ShipsInfo;
-using Neurocache.Utilities;
 using Neurocache.Schema;
 
 namespace Neurocache.Hubs
 {
     public class Persona
     {
-        public static string HubId => nameof(Persona).ToLower();
-        public static async void Run(HubOperation hubOperation)
+        public static string HubTypeId => "persona";
+        public static async void Run(OperationReport report, ISubject<OperationReport> callback, CancellationToken cancelToken)
         {
+            Ships.Log($"{HubTypeId} received report: {report}");
             Ships.Log("Generating persona...");
 
-            await Utils.Wait(10, hubOperation);
+            await Task.Delay(TimeSpan.FromSeconds(10), cancelToken);
 
             Ships.Log("Finished generating persona");
 
-            var hubReport = new OperationReport(
-                hubOperation.OperationReport.Token,
-                HubId,
-                "Generating persona",
-                false,
-                []
-            );
-
-            BroadcastChannelService.SendHubReportToVanguardStream.OnNext(hubReport);
+            callback.OnNext(new OperationReport(
+                report.Token,
+                HubTypeId,
+                "Some persona",
+                true,
+                report.ReportId
+            ));
         }
     }
 }

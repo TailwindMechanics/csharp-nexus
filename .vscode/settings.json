@@ -27,12 +27,14 @@
         "Agent": "Robot",
         "Dev": "Tools",
         "Root": "Base",
-        "Broadcasts": "Routes",
         "Bulletin": "Messages",
+        "Operations": "Interface",
         "Envars": "Secure",
         "LogkeepFrigate": "Log",
         "Lifetime": "Generator",
-        "ShipsInfo": "Delta"
+        "ShipsInfo": "Delta",
+        "RequestsChannel": "Upload",
+        "ConduitFrigate": "Routes"
     },
     "material-icon-theme.files.associations": {
         "root": "Tree"
