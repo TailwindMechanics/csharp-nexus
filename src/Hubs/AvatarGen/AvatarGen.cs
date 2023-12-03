@@ -12,6 +12,8 @@ namespace Neurocache.Hubs
         public static string HubAuthor => "avatar_gen";
         public static async void Run(OperationReport report, ISubject<OperationReport> callback, CancellationToken cancelToken)
         {
+            if (report.Recipient != HubAuthor) return;
+
             Ships.Log($"{HubAuthor} received report: {report}");
             Ships.Log("Generating avatar...");
 
@@ -21,6 +23,7 @@ namespace Neurocache.Hubs
             callback.OnNext(new OperationReport(
                 report.Token,
                 HubAuthor,
+                report.Author,
                 "Generating avatar",
                 report.AgentId,
                 true,

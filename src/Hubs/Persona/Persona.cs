@@ -12,6 +12,8 @@ namespace Neurocache.Hubs
         public static string HubAuthor => "persona";
         public static async void Run(OperationReport report, ISubject<OperationReport> callback, CancellationToken cancelToken)
         {
+            if (report.Recipient != HubAuthor) return;
+
             Ships.Log($"{HubAuthor} received report: {report}");
             Ships.Log("Generating persona...");
 
@@ -22,6 +24,7 @@ namespace Neurocache.Hubs
             callback.OnNext(new OperationReport(
                 report.Token,
                 HubAuthor,
+                report.Author,
                 "Some persona",
                 report.AgentId,
                 true,
