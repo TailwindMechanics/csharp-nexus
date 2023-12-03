@@ -32,12 +32,13 @@ namespace Neurocache.Operations
         {
             Ships.Log($"OperationService/OnOperationRequestReceived: {requestReport}");
 
-            CreateOperation(requestReport.Token);
+            var agentId = Guid.Parse(requestReport.Payload);
+            CreateOperation(requestReport.Token, agentId);
         }
 
-        public static void CreateOperation(Guid operationToken)
+        public static void CreateOperation(Guid operationToken, Guid agentId)
         {
-            var operation = new Operation(operationToken);
+            var operation = new Operation(operationToken, agentId);
             Operations.TryAdd(operationToken, operation);
         }
 

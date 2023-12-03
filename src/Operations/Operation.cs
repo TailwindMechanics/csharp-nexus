@@ -18,10 +18,10 @@ namespace Neurocache.Operations
         readonly ISubject<Unit> stop = new Subject<Unit>();
         readonly ConduitChannel conduitChannel;
 
-        public Operation(Guid operationToken)
+        public Operation(Guid operationToken, Guid agentId)
         {
             OperationToken = operationToken;
-            conduitChannel = new ConduitChannel(operationToken);
+            conduitChannel = new ConduitChannel(agentId);
 
             conduitChannel.OnReportReceived
                 .Where(ValidConduitAuthor)
