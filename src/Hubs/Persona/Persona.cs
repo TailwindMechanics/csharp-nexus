@@ -9,10 +9,10 @@ namespace Neurocache.Hubs
 {
     public class Persona
     {
-        public static string HubTypeId => "persona";
+        public static string HubAuthor => "persona";
         public static async void Run(OperationReport report, ISubject<OperationReport> callback, CancellationToken cancelToken)
         {
-            Ships.Log($"{HubTypeId} received report: {report}");
+            Ships.Log($"{HubAuthor} received report: {report}");
             Ships.Log("Generating persona...");
 
             await Task.Delay(TimeSpan.FromSeconds(10), cancelToken);
@@ -21,8 +21,9 @@ namespace Neurocache.Hubs
 
             callback.OnNext(new OperationReport(
                 report.Token,
-                HubTypeId,
+                HubAuthor,
                 "Some persona",
+                report.AgentId,
                 true,
                 report.ReportId
             ));

@@ -2,7 +2,6 @@
 
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
-using System.Reactive;
 
 using Neurocache.ShipsInfo;
 using Neurocache.Schema;
@@ -15,21 +14,25 @@ namespace Neurocache.Operations
         public readonly Guid OperationToken;
         readonly ISubject<OperationReport> uplinkHubReportSubject = new Subject<OperationReport>();
         readonly CancellationTokenSource cancelToken = new();
-        readonly ISubject<Unit> stop = new Subject<Unit>();
         readonly ConduitChannel conduitChannel;
 
         public Operation(Guid operationToken, Guid agentId)
         {
+            var stopStream = OperationService.StopSubject
+                .Where(token => token == operationToken)
+                .Take(1);
+            stopStream.Subscribe(_ => Stop());
+
             OperationToken = operationToken;
-            conduitChannel = new ConduitChannel(agentId);
+            conduitChannel = new ConduitChannel(agentId, operationToken);
 
             conduitChannel.OnReportReceived
                 .Where(ValidConduitAuthor)
-                .TakeUntil(stop)
+                .TakeUntil(stopStream)
                 .Subscribe(OnReportReceived);
 
             uplinkHubReportSubject
-                .TakeUntil(stop)
+                .TakeUntil(stopStream)
                 .Where(ValidHubAuthor)
                 .Subscribe(UplinkHubReport);
 
@@ -38,12 +41,10 @@ namespace Neurocache.Operations
             Ships.Log($"Operation started with token {operationToken}");
         }
 
-        public void Stop()
+        void Stop()
         {
-            Ships.Log($"Stopping operation with token {OperationToken}");
             cancelToken.Cancel();
-            conduitChannel.Stop();
-            stop.OnNext(Unit.Default);
+            Ships.Log($"Operation stopped with token {OperationToken}");
         }
 
         void OnReportReceived(OperationReport report)
@@ -65,8 +66,8 @@ namespace Neurocache.Operations
             => report.Author == "Vanguard";
 
         bool ValidHubAuthor(OperationReport report)
-            => report.Author == AvatarGen.HubTypeId
-            || report.Author == GptChat.HubTypeId
-            || report.Author == Persona.HubTypeId;
+            => report.Author == AvatarGen.HubAuthor
+            || report.Author == GptChat.HubAuthor
+            || report.Author == Persona.HubAuthor;
     }
 }

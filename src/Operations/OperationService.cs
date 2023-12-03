@@ -1,20 +1,24 @@
 //path: src\Operations\OperationService.cs
 
 using System.Collections.Concurrent;
+using System.Reactive.Subjects;
 using System.Reactive.Linq;
-using Neurocache.Schema;
 
 using Neurocache.RequestsChannel;
 using Neurocache.ShipsInfo;
+using Neurocache.Schema;
 
 namespace Neurocache.Operations
 {
     public static class OperationService
     {
+        public static readonly Subject<Guid> StopSubject = new();
         public static ConcurrentDictionary<Guid, Operation> Operations { get; } = new();
 
         public static void OnAppStarted()
         {
+            var stopStream = StopSubject.Subscribe(Stop);
+
             RequestsChannelService
                 .OnDownlinkReceived
                 .Where(operationReport => operationReport.ReportId == "vanguard_started")
@@ -32,8 +36,7 @@ namespace Neurocache.Operations
         {
             Ships.Log($"OperationService/OnOperationRequestReceived: {requestReport}");
 
-            var agentId = Guid.Parse(requestReport.Payload);
-            CreateOperation(requestReport.Token, agentId);
+            CreateOperation(requestReport.Token, requestReport.AgentId);
         }
 
         public static void CreateOperation(Guid operationToken, Guid agentId)
@@ -42,7 +45,7 @@ namespace Neurocache.Operations
             Operations.TryAdd(operationToken, operation);
         }
 
-        public static void Stop(Guid token)
+        static void Stop(Guid token)
         {
             Operations.TryGetValue(token, out var operation);
             if (operation == null)
@@ -51,7 +54,6 @@ namespace Neurocache.Operations
                 return;
             }
 
-            operation.Stop();
             Operations.TryRemove(token, out _);
         }
 
@@ -59,7 +61,7 @@ namespace Neurocache.Operations
         {
             foreach (var operation in Operations.Values)
             {
-                operation.Stop();
+                Stop(operation.OperationToken);
             }
 
             Operations.Clear();

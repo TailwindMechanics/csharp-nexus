@@ -18,38 +18,59 @@ namespace Neurocache.RequestsChannel
             => onDownlinkReceived;
 
         const string requestsTopic = "operation_requests";
-        static IDisposable? downlinkSub;
-        static IDisposable? uplinkSub;
 
-        public static async void OnAppStart()
+        static IDisposable? channelClosedSub;
+        const double restartDelaySeconds = 1;
+        static IDisposable? downlinkSub;
+        static bool starting;
+
+        public static void OnAppStart()
+        {
+            starting = true;
+
+            channelClosedSub = Conduit
+                .ChannelClosed
+                .Where(_ => !starting)
+                .ObserveOn(Scheduler.Default)
+                .Subscribe(_ => Stop(true));
+
+            Start();
+        }
+
+        static async void Start()
         {
             await Conduit.EnsureTopicExists(requestsTopic);
 
-            uplinkSub = UplinkReport
-                .ObserveOn(Scheduler.Default)
-                .Subscribe(operationReport =>
-                {
-                    Ships.Log($"Sending operation report: {operationReport}");
-                    Conduit.Uplink(requestsTopic, operationReport, CancellationToken.None);
-                });
-
             downlinkSub = Conduit.Downlink(requestsTopic, Conduit.DownlinkConsumer, CancellationToken.None)
                 .ObserveOn(Scheduler.Default)
+                .Where(report => report != null)
                 .Subscribe(operationReport =>
                 {
-                    Ships.Log($"Received operation report: {operationReport}");
-                    onDownlinkReceived.OnNext(operationReport);
+                    Ships.Log($"Received Request operation report: {operationReport}");
+                    onDownlinkReceived.OnNext(operationReport!);
                 });
 
             Ships.Log("RequestsChannelService started");
+            starting = false;
+        }
+
+        static async void Stop(bool restart)
+        {
+            Ships.Log("RequestsChannelService stopping");
+            channelClosedSub?.Dispose();
+            downlinkSub?.Dispose();
+
+            if (!restart) return;
+
+            starting = true;
+            Ships.Log($"Restarting in {restartDelaySeconds} seconds");
+
+            await Task.Delay(TimeSpan.FromSeconds(restartDelaySeconds));
+
+            Start();
         }
 
         public static void OnAppClosing()
-        {
-            Ships.Log("RequestsChannelService closing");
-
-            downlinkSub?.Dispose();
-            uplinkSub?.Dispose();
-        }
+            => Stop(false);
     }
 }

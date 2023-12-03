@@ -9,18 +9,19 @@ namespace Neurocache.Hubs
 {
     public static class GptChat
     {
-        public static string HubTypeId => "gpt_chat";
+        public static string HubAuthor => "gpt_chat";
         public static async void Run(OperationReport report, ISubject<OperationReport> callback, CancellationToken cancelToken)
         {
-            Ships.Log($"{HubTypeId} received report: {report}");
+            Ships.Log($"{HubAuthor} received report: {report}");
             Ships.Log("demo: async fetch memories from pinecone");
 
             await Task.Delay(TimeSpan.FromSeconds(10), cancelToken);
 
             callback.OnNext(new OperationReport(
                 report.Token,
-                HubTypeId,
+                HubAuthor,
                 "demo: async fetch memories from pinecone",
+                report.AgentId,
                 false,
                 report.ReportId
             ));
@@ -31,8 +32,9 @@ namespace Neurocache.Hubs
 
             callback.OnNext(new OperationReport(
                 report.Token,
-                HubTypeId,
+                HubAuthor,
                 "demo: async stream all message replies from gpt-4",
+                report.AgentId,
                 false,
                 report.ReportId
             ));
@@ -43,8 +45,9 @@ namespace Neurocache.Hubs
 
             callback.OnNext(new OperationReport(
                 report.Token,
-                HubTypeId,
+                HubAuthor,
                 "demo: async update pinecone with new memories",
+                report.AgentId,
                 true,
                 report.ReportId
             ));

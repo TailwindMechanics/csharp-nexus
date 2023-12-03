@@ -3,7 +3,6 @@
 using System.Reactive.Concurrency;
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
-using System.Reactive;
 
 using Neurocache.ConduitFrigate;
 using Neurocache.ShipsInfo;
@@ -11,22 +10,32 @@ using Neurocache.Schema;
 
 namespace Neurocache.Operations
 {
-    public class ConduitChannel(Guid agentid)
+    public class ConduitChannel(Guid agentid, Guid operationToken)
     {
         public readonly ISubject<OperationReport> SendReport = new Subject<OperationReport>();
         readonly Subject<OperationReport> onReportReceived = new();
         public IObservable<OperationReport> OnReportReceived
             => onReportReceived;
 
-        readonly Subject<Unit> stop = new();
+        IDisposable? channelClosedSub;
         IDisposable? downlinkSub;
         IDisposable? uplinkSub;
 
         public void Start()
         {
+            var stopStream = OperationService.StopSubject
+                .Where(token => token == operationToken)
+                .Take(1);
+            stopStream.Subscribe(_ => Stop());
+
+            channelClosedSub = Conduit.ChannelClosed
+                .Take(1)
+                .TakeUntil(stopStream)
+                .Subscribe(_ => OperationService.StopSubject.OnNext(operationToken));
+
             uplinkSub = SendReport
                 .ObserveOn(Scheduler.Default)
-                .TakeUntil(stop)
+                .TakeUntil(stopStream)
                 .Subscribe(operationReport =>
                 {
                     Ships.Log($"ConduitChannel: Sending operation report: {operationReport}");
@@ -35,19 +44,20 @@ namespace Neurocache.Operations
 
             downlinkSub = Conduit.Downlink(agentid.ToString(), Conduit.DownlinkConsumer, CancellationToken.None)
                 .ObserveOn(Scheduler.Default)
-                .TakeUntil(stop)
+                .Where(report => report != null)
+                .TakeUntil(stopStream)
                 .Subscribe(operationReport =>
                 {
                     Ships.Log($"ConduitChannel: Received operation report: {operationReport}");
-                    onReportReceived.OnNext(operationReport);
+                    onReportReceived.OnNext(operationReport!);
                 });
 
             Ships.Log("ConduitChannel: Started");
         }
 
-        public void Stop()
+        void Stop()
         {
-            stop.OnNext(Unit.Default);
+            channelClosedSub?.Dispose();
             downlinkSub?.Dispose();
             uplinkSub?.Dispose();
 
