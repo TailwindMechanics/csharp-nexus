@@ -27,13 +27,11 @@ namespace Neurocache.Operations
             conduitChannel = new ConduitChannel(agentId);
 
             conduitChannel.OnReportReceived
-                .Where(ValidConduitAuthor)
                 .TakeUntil(stopStream)
                 .Subscribe(OnReportReceived);
 
             uplinkHubReportSubject
                 .TakeUntil(stopStream)
-                .Where(ValidHubAuthor)
                 .Subscribe(UplinkHubReport);
 
             conduitChannel.Start();
@@ -75,13 +73,5 @@ namespace Neurocache.Operations
             Ships.Log($"Uplinking Hub Report: {report}");
             conduitChannel.SendReport.OnNext(report);
         }
-
-        bool ValidConduitAuthor(OperationReport report)
-            => report.Author == "Vanguard";
-
-        bool ValidHubAuthor(OperationReport report)
-            => report.Author == AvatarGen.HubAuthor
-            || report.Author == GptChat.HubAuthor
-            || report.Author == Persona.HubAuthor;
     }
 }
