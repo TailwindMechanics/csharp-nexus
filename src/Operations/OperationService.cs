@@ -44,6 +44,7 @@ namespace Neurocache.Operations
 
         public static void CreateOperation(Guid operationToken, Guid agentId)
         {
+            Ships.Log($"OperationService/CreateOperation: {operationToken}");
             var operation = new Operation(operationToken, agentId);
             Operations.TryAdd(operationToken, operation);
         }
