@@ -21,7 +21,6 @@ namespace Neurocache.Operations
 
             RequestsChannelService
                 .OnDownlinkReceived
-                .Where(operationReport => operationReport.ReportId == "vanguard_started")
                 .Subscribe(OnOperationRequestReceived);
 
             Ships.Log("OperationService/OnAppStarted");
@@ -36,7 +35,11 @@ namespace Neurocache.Operations
         {
             Ships.Log($"OperationService/OnOperationRequestReceived: {requestReport}");
 
-            CreateOperation(requestReport.Token, requestReport.AgentId);
+            if (requestReport.ReportId == "vanguard_started")
+            {
+                Ships.Log($"OperationService/OnOperationRequestReceived: vanguard_started");
+                CreateOperation(requestReport.Token, requestReport.AgentId);
+            }
         }
 
         public static void CreateOperation(Guid operationToken, Guid agentId)
