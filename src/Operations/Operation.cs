@@ -51,9 +51,25 @@ namespace Neurocache.Operations
 
             if (OnReceivedDispatchStopReport(report)) return;
 
-            AvatarGen.Run(report, uplinkHubReportSubject, cancelToken.Token);
-            GptChat.Run(report, uplinkHubReportSubject, cancelToken.Token);
-            Persona.Run(report, uplinkHubReportSubject, cancelToken.Token);
+            AvatarGen.Run(report, HubReport, cancelToken.Token);
+            GptChat.Run(report, HubReport, cancelToken.Token);
+            Persona.Run(report, HubReport, cancelToken.Token);
+        }
+
+        void HubReport(string author, OperationReport prevReport, string payload, bool final)
+        {
+            var hubReport = new OperationReport(
+                prevReport.Token,
+                author,
+                "Vanguard",
+                payload,
+                prevReport.AgentId,
+                final,
+                prevReport.ReportId
+            );
+
+            Ships.Log($"HubReport: {hubReport}");
+            uplinkHubReportSubject.OnNext(hubReport);
         }
 
         bool OnReceivedDispatchStopReport(OperationReport report)
