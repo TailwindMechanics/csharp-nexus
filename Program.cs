@@ -6,8 +6,8 @@ using Serilog;
 using Neurocache.RequestsChannel;
 using Neurocache.ConduitFrigate;
 using Neurocache.LogkeepFrigate;
-using Neurocache.Lifetime;
 using Neurocache.Operations;
+using Neurocache.Lifetime;
 
 var builder = WebApplication.CreateBuilder(args);
 {

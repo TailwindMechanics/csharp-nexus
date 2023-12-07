@@ -12,7 +12,6 @@ namespace Neurocache.RequestsChannel
 {
     public static class RequestsChannelService
     {
-        public static readonly ISubject<OperationReport> UplinkReport = new Subject<OperationReport>();
         static readonly Subject<OperationReport> onDownlinkReceived = new();
         public static IObservable<OperationReport> OnDownlinkReceived
             => onDownlinkReceived;

@@ -24,7 +24,7 @@ namespace Neurocache.Operations
             stopStream.Subscribe(_ => Stop());
 
             OperationToken = operationToken;
-            conduitChannel = new ConduitChannel(agentId, operationToken);
+            conduitChannel = new ConduitChannel(agentId);
 
             conduitChannel.OnReportReceived
                 .Where(ValidConduitAuthor)

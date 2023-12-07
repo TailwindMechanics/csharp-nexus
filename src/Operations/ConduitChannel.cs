@@ -3,6 +3,7 @@
 using System.Reactive.Concurrency;
 using System.Reactive.Subjects;
 using System.Reactive.Linq;
+using System.Reactive;
 
 using Neurocache.ConduitFrigate;
 using Neurocache.ShipsInfo;
@@ -10,32 +11,22 @@ using Neurocache.Schema;
 
 namespace Neurocache.Operations
 {
-    public class ConduitChannel(Guid agentid, Guid operationToken)
+    public class ConduitChannel(Guid agentid)
     {
         public readonly ISubject<OperationReport> SendReport = new Subject<OperationReport>();
         readonly Subject<OperationReport> onReportReceived = new();
         public IObservable<OperationReport> OnReportReceived
             => onReportReceived;
 
-        IDisposable? channelClosedSub;
+        readonly Subject<Unit> stop = new();
         IDisposable? downlinkSub;
         IDisposable? uplinkSub;
 
         public void Start()
         {
-            var stopStream = OperationService.StopSubject
-                .Where(token => token == operationToken)
-                .Take(1);
-            stopStream.Subscribe(_ => Stop());
-
-            channelClosedSub = Conduit.ChannelClosed
-                .Take(1)
-                .TakeUntil(stopStream)
-                .Subscribe(_ => OperationService.StopSubject.OnNext(operationToken));
-
             uplinkSub = SendReport
                 .ObserveOn(Scheduler.Default)
-                .TakeUntil(stopStream)
+                .TakeUntil(stop)
                 .Subscribe(operationReport =>
                 {
                     Ships.Log($"ConduitChannel: Sending operation report: {operationReport}");
@@ -45,7 +36,7 @@ namespace Neurocache.Operations
             downlinkSub = Conduit.Downlink(agentid.ToString(), Conduit.DownlinkConsumer, CancellationToken.None)
                 .ObserveOn(Scheduler.Default)
                 .Where(report => report != null)
-                .TakeUntil(stopStream)
+                .TakeUntil(stop)
                 .Subscribe(operationReport =>
                 {
                     Ships.Log($"ConduitChannel: Received operation report: {operationReport}");
@@ -55,9 +46,9 @@ namespace Neurocache.Operations
             Ships.Log("ConduitChannel: Started");
         }
 
-        void Stop()
+        public void Stop()
         {
-            channelClosedSub?.Dispose();
+            stop.OnNext(Unit.Default);
             downlinkSub?.Dispose();
             uplinkSub?.Dispose();
 
